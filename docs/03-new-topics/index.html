@@ -8,11 +8,11 @@
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.298">
+  <meta name="generator" content="quarto-1.5.52">
 
   <meta name="author" content="George G. Vega Yon, Ph.D.">
   <meta name="dcterms.date" content="2024-01-12">
-  <title>Chisocnet Summer School 2024 – ERGMs - New topics in network modeling</title>
+  <title>SICCS at the U of F -- ERGMs – New topics in network modeling</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -34,6 +34,7 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
+      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -50,8 +51,8 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css" id="theme">
-  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
@@ -66,7 +67,7 @@
    });
 }}});
   </script>
-  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -192,7 +193,8 @@
   }
 
   .callout.callout-titled .callout-body > .callout-content > :last-child {
-    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
   }
 
   .callout.callout-titled .callout-icon::before {
@@ -402,8 +404,7 @@ George G. Vega Yon, Ph.D.
 </ul>
 </div><div class="column">
 <p><img data-src="networks.png" style="width:100.0%"></p>
-</div>
-</div>
+</div></div>
 </section>
 <section id="statistical-power-of-soam" class="slide level2">
 <h2>Statistical power of SOAM</h2>
@@ -427,8 +428,7 @@ George G. Vega Yon, Ph.D.
 <ul>
 <li>It provides greater flexibility to accommodate more complicated models and add extensions such as hierarchical models. <img data-src="alaam-diagram.png" alt="Figure 1 reproduced from A. D. Stivala et al. (2020)"></li>
 </ul>
-</div>
-</div>
+</div></div>
 </section>
 <section id="relational-event-models" class="slide level2">
 <h2>Relational Event Models</h2>
@@ -451,11 +451,10 @@ George G. Vega Yon, Ph.D.
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="bignet.jpg" style="width:100.0%"></p>
-<p></p><figcaption>Partial map of the Internet based on the January 15, 2005 data found on opte.org. – <a href="https://en.wikipedia.org/w/index.php?title=File:Internet_map_1024.jpg&amp;oldid=1061830697">Wiki</a></figcaption><p></p>
+<figcaption>Partial map of the Internet based on the January 15, 2005 data found on opte.org. – <a href="https://en.wikipedia.org/w/index.php?title=File:Internet_map_1024.jpg&amp;oldid=1061830697">Wiki</a></figcaption>
 </figure>
 </div>
-</div>
-</div>
+</div></div>
 </section>
 <section id="exponential-random-network-models" class="slide level2">
 <h2>Exponential Random <em>Network</em> Models</h2>
@@ -481,7 +480,7 @@ George G. Vega Yon, Ph.D.
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="littlenet.jpg" style="width:40.0%"></p>
-<p></p><figcaption>Five small networks from the <code>ergmito</code> R package</figcaption><p></p>
+<figcaption>Five small networks from the <code>ergmito</code> R package</figcaption>
 </figure>
 </div>
 <aside><ol class="aside-footnotes"><li id="fn1"><p>From the Spanish suffix meaning small.</p></li></ol></aside></section>
@@ -495,8 +494,7 @@ George G. Vega Yon, Ph.D.
 </ul>
 </div><div class="column" style="width:60%;">
 <p><img data-src="defm.png"></p>
-</div>
-</div>
+</div></div>
 </section>
 <section id="power-analysis-in-ergms" class="slide level2">
 <h2>Power analysis in ERGMs</h2>
@@ -528,10 +526,12 @@ George G. Vega Yon, Ph.D.
 <section id="references" class="slide level2 smaller scrollable">
 <h2>References</h2>
 
+<div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 <p>New topics in network modeling – https://ggvy.cl</p>
 </div>
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-brandenbergerInterdependenciesConflictDynamics2020" class="csl-entry" role="listitem">
 Brandenberger, Laurence. 2020. <span>“Interdependencies in <span>Conflict Dynamics</span>: <span>Analyzing Endogenous Patterns</span> in <span>Conflict Event Data Using Relational Event Models</span>.”</span> In <em>Computational <span>Conflict Research</span></em>, edited by Emanuel Deutschmann, Jan Lorenz, Luis G. Nardin, Davide Natalini, and Adalbert F. X. Wilhelm, 67–80. Computational <span>Social Sciences</span>. <span>Cham</span>: <span>Springer International Publishing</span>. <a href="https://doi.org/10.1007/978-3-030-29333-8_4">https://doi.org/10.1007/978-3-030-29333-8_4</a>.
 </div>
@@ -596,7 +596,6 @@ Wang, Zeyi, Ian E. Fellows, and Mark S. Handcock. 2023. <span>“Understanding N
       Reveal.initialize({
 'controlsAuto': true,
 'previewLinksAuto': false,
-'smaller': false,
 'pdfSeparateFragments': false,
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
@@ -795,18 +794,7 @@ Wang, Zeyi, Ian E. Fellows, and Mark S. Handcock. 2023. <span>“Understanding N
         }
         return false;
       }
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        text: function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-        }
-      });
-      clipboard.on('success', function(e) {
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -838,11 +826,50 @@ Wang, Zeyi, Ian E. Fellows, and Mark S. Handcock. 2023. <span>“Understanding N
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
-      function tippyHover(el, contentFn) {
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
-          content: contentFn,
           maxWidth: 500,
           delay: 100,
           arrow: false,
@@ -852,8 +879,17 @@ Wang, Zeyi, Ian E. Fellows, and Mark S. Handcock. 2023. <span>“Understanding N
           interactive: true,
           interactiveBorder: 10,
           theme: 'light-border',
-          placement: 'bottom-start'
+          placement: 'bottom-start',
         };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
         window.tippy(el, config); 
@@ -867,7 +903,11 @@ Wang, Zeyi, Ian E. Fellows, and Mark S. Handcock. 2023. <span>“Understanding N
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          return note.innerHTML;
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
         });
       }
       const findCites = (el) => {

@@ -1,3 +1,3 @@
-# ERGM Materials for the I Chilean Summer School about Social Network Research
+# ERGM Materials for Summer Institute in Computational Social Science @ U of Florida
 
-This repository contains the source code of the Exponential-family Random Graph Models [ERGM] materials presented during the **1st Chilean Summer School about Social Network Research**. Although you are welcome to explore the repository, the contents were designed to be viewed on the website: https://gvegayon.github.io/chisocnet-ss2024.
+This repository contains the source code of the Exponential-family Random Graph Models [ERGM] materials presented during the 2024 **Summer Institute in Computational Social Science** at the University of Florida. Although you are welcome to explore the repository, the contents were designed to be viewed on the website: <https://gvegayon.github.io/siccs-uof-2024>.

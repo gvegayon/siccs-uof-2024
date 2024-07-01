@@ -6,7 +6,7 @@ project:
     - "index.qmd"
 
 website:
-  title: Chisocnet Summer School 2024 -- ERGMs
+  title: SICCS at the U of F -- ERGMs
   
   navbar: 
     left:

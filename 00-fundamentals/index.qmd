@@ -7,7 +7,7 @@ Before jumping into network science details, we need to cover some fundamentals.
 
 # Programming with R
 
-The R programming language [@R] is the defacto language for social network analysis[^notfornetsci]. Furthermore, R homes the most comprehensive collection of packages implementing the methods we will cover here. Let's start by the fundamentals
+The R programming language [@R] is the defacto language for social network analysis[^notfornetsci]. Furthermore, R homes the most comprehensive collection of packages implementing the methods we will cover here. Let's start with the fundamentals
 
 [^notfornetsci]: Although, not for network science in general.
 

@@ -3,9 +3,21 @@ nocite: |
   @*
 bibliography: references.bib
 title: Home
+author: George G. Vega Yon, Ph.D.
+date-modified: 2024-07-01
 ---
 
-Welcome to the first version of ChiSocNet's Summer School! This website was created for the ERGMs component of the school. Here, you will find three subpages with the following content: (1) Fundamentals about R and Statistics, (2) Introduction to ERGMs, (3) Advanced ERGMs, and (4) New topics in Network Modeling.
+This website was created for the school's ERGMs component. Here, you will find three subpages with the following content: (1) Fundamentals about R and Statistics, (2) Introduction to ERGMs, (3) and Advanced ERGMs:
+
+1. [Fundamentals about R and Statistics](/00-fundamentals)
+
+2. [Introduction to ERGMs](/01-intro-to-ergms/)
+
+3. [Advanced ERGMs](/02-advanced-ergms) 
+
+In addition, a presentation about new topics in network modeling was presented during the 1st Chilean Summer School of Social Network Research. The slides are available at the following link:
+
+4. [New topics in Network Modeling](/03-new-topics)
 
 # References
 
@@ -16,8 +28,8 @@ Although not all about ERGMs, the following list of references is an excellent r
 
 # Disclaimer
 
-This is an ongoing project. The course is being developed and will be updated as we go. If you have any comments or suggestions, please let me know. The generation of the course materials was assisted by AI tools, namely, GitHub copilot.
+This is an ongoing project. The course is being developed and will be updated as we go. If you have any comments or suggestions, please let me know. The course materials were generated with AI tools, namely, GitHub copilot. The first version of the project was presented during the 1st Chilean Summer School of Social Network Research.
 
 # Code of Conduct
   
-Please note that the networks-udd2024 project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+Note this project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
