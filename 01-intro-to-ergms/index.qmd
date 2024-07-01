@@ -1,0 +1,470 @@
+---
+title: Introduction to ERGMs
+references: ../references.bib
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| message: false
+#| warning: false
+
+# Prints the number using two decimals
+pp <- function(x) {
+  sprintf("%.2f", x)
+}
+
+```
+
+\newcommand{\tpose}[1]{#1^{\mathbf{t}}}
+\newcommand{\Prergm}[0]{P_{\mathcal{Y}, \bm{\theta}}}
+\newcommand{\Y}[0]{\bm{Y}}
+\newcommand{\y}[0]{\bm{y}}
+\newcommand{\thetas}[0]{\bm{\theta}}
+\newcommand{\isone}[1]{\mathbb{1}\left(#1\right)}
+
+Have you ever wondered if the friend of your friend is your friend? Or if the people you consider to be your friends feel the same about you? Or if age is related to whether you seek advice from others? All these (and many others certainly more creative) questions can be answered using Exponential-Family Random Graph Models.
+
+# Introduction
+
+Exponential-Family Random Graph Models, known as ERGMs, ERG Models, or $p^*$ models (@Holland1981, @Frank1986, @Wasserman1996, @Snijders2006, @Robins2007, and many others) are a large family of statistical distributions for random graphs. In ERGMs, the focus is on the processes that give origin to the network rather than the individual ties.[^predict]
+
+[^predict]: While ERG Models can be used to predict individual ties (which is another way of describing them), the focus is on the processes that give origin to the network.
+
+The most common representation of ERGMs is the following:
+
+$$
+\Prergm(\bm{Y}=\bm{y}) =  \exp\left(\tpose{\bm{\theta}} s(y)\right)\kappa(\bm{\theta})^{-1}
+$$
+
+where $\bm{Y}$ is a random graph, $\bm{y}\in \mathcal{Y}$ is a particular realization of $Y$, $\bm{\theta}$ is a vector of parameters, $s(\bm{y})$ is a vector of sufficient statistics, and $\kappa(\bm{\theta})$ is a normalizing constant. The normalizing constant is defined as:
+
+$$
+\kappa(\bm{\theta}) = \sum_{\bm{y} \in \mathcal{Y}} \exp\left(\tpose{\bm{\theta}} s(\bm{y})\right)
+$$
+
+From the statistical point of view, the normalizing constant makes this model attractive; only cases where $\mathcal{Y}$ is small enough to be enumerated are feasible [@vegayonExponentialRandomGraph2021]. Because of that reason, estimating ERGMs is a challenging task.
+
+In more simple terms, ERG models resemble Logistic regressions. The term $\tpose{\thetas} s(\y)$ is the sum of the product between the parameters and the statistics (like you would see in a Logistic regression,) and its key component is the composition of the vector of sufficient statistics, $s(\y)$. The latter is what defines the model.
+
+The vector of sufficient statistics dictates the data-generating process of the network. Like the mean and variance characterize the normal distribution, sufficient statistics (and corresponding parameters) characterize the ERG distribution. @fig-ergmterms shows some examples of sufficient statistics with their corresponding parametrizations.
+
+![Example ERGM terms from @vegayonExponentialRandomGraph2021](ergm-terms-vegayonetal2021.jpg){#fig-ergmterms width="60%"}
+
+
+The `ergm` package has many terms we can use to fit these models. You can explore the available terms in the manual `ergm.terms` in the `ergm` package. Take a moment to explore the manual and see the different terms available.
+
+# Dyadic independence (p1)
+
+The simplest ERG model we can fit is a Bernoulli (Erdos-Renyi) model. Here, the only statistic is the edgecount. Now, if we can write the function computing sufficient statistics as a sum over all edges, *i.e.*, $s(\y) = \sum_{ij}s'(y_{ij})$, the model reduces to a Logistic regression. 
+
+```{r}
+#| label: bernoulli-ergm
+#| message: false
+#| warning: false
+#| collapse: true
+library(ergm)
+
+# Simulating a Bernoulli network
+Y <- matrix(rbinom(100^2, 1, 0.1), 100, 100)
+diag(Y) <- NA
+
+cbind(
+  logit = glm(as.vector(Y) ~ 1, family = binomial) |> coef(),
+  ergm  = ergm(Y ~ edges) |> coef(),
+  avg   = mean(Y, na.rm = TRUE) |> qlogis()
+)
+```
+
+When we see this, we say that dyads are independent of each other; this is also called *p1* models [@Holland1981]. As a second example, imagine that we are interested in assessing whether gender homophily (the tendency between individuals of the same gender to connect) is present in a network. ERG models are the right tool for this task. Moreover, if we assume that gender homophily is the only mechanism that governs the network, the problem reduces to a Logistic regression:
+
+$$
+\Prergm(y_{ij} = 1) = \text{Logit}^{-1}\left(\theta_{edges} + \theta_{homophily}\isone{X_i = X_j}\right)
+$$
+
+where $\isone{\cdot}$ is the indicator function, and $X_i$ equals one if the $ith$ individual is female, and zero otherwise. To see this, let's simulate some data. We will use the `simulate_formula` function in the `ergm` package. All we need is a network, a model, and some arbitrary coefficients. We start with an indicator vector for gender (1: female, male otherwise):
+
+```{r}
+#| label: simple-example
+#| message: false
+#| warning: false
+# Simulating data
+set.seed(7731)
+X <- rbinom(100, 1, 0.5)
+head(X)
+```
+
+Next, we use the functions from the `ergm` and `network` packages to simulate a network with homophily:
+
+```{r}
+#| label: simple-example-simulate
+#| warning: false
+#| message: false
+# Simulating the network with homophily
+library(ergm)
+
+# A network with 100 vertices
+Y <- network(100) 
+
+# Adding the vertex attribute with the %v% operator
+Y %v% "X" <- X
+
+# Simulating the network
+Y <- ergm::simulate_formula(
+  # The model
+  Y ~ edges + nodematch("X"),
+  # The coefficients
+  coef = c(-3, 2)
+  )
+```
+
+In this case, the network tends to be sparse (negative edges coefficient) and present homophilic ties (positive nodematch coefficient). Using the `sna` package (also from the `statnet` suite), we can plot the network:
+
+```{r}
+#| label: simple-example-plot
+#| message: false
+#| warning: false
+library(sna)
+gplot(Y, vertex.col = c("green", "red")[Y %v% "X" + 1])
+```
+
+Using the ERGM package, we can fit the model using code very similar to the one used to simulate the network:
+
+
+```{r}
+#| label: simple-example-fit
+#| message: false
+#| warning: false
+fit_homophily <- ergm(Y ~ edges + nodematch("X"))
+```
+
+We will check the results later and compare them against the following: the Logit model. The following code chunk implements the logistic regression model for this particular model. This example only proves that ERGMs are a generalization of Logistic regression.
+
+::: {.callout .callout-caution title="Only to learn!"}
+This example was created only for learning purposes. In practice, you should **always** use the `ergm` package or `PNet` software to fit ERGMs.
+:::
+
+```{r}
+#| label: simple-example-logit-definition
+#| message: false
+#| code-fold: true
+n <- 100
+sstats <- summary_formula(Y ~ edges + nodematch("X"))
+Y_mat <- as.matrix(Y)
+diag(Y_mat) <- NA
+
+# To speedup computations, we pre-compute this value
+X_vec <- outer(X, X, "==") |> as.numeric()
+
+# Function to compute the negative loglikelihood
+obj <- \(theta) {
+
+  # Compute the probability according to the value of Y
+  p <- ifelse(
+    Y_mat == 1,
+
+    # If Y = 1
+    plogis(theta[1] + X_vec * theta[2]),
+
+    # If Y = 0
+    1 - plogis(theta[1] + X_vec * theta[2])
+  )
+
+  # The -loglikelihood
+  -sum(log(p[!is.na(p)]))
+  
+
+}
+```
+
+And, using the `optim` function, we can fit the model:
+
+```{r}
+#| label: simple-example-logit-fit
+# Fitting the model
+fit_homophily_logit <- optim(c(0,0), obj, hessian = TRUE)
+```
+
+Now that we have the values let's compare them:
+
+```{r}
+#| label: simple-example-fit-glm-coef
+#| message: false
+# The coefficients
+cbind(
+  theta_ergm  = coef(fit_homophily),
+  theta_logit = fit_homophily_logit$par,
+  sd_ergm     = vcov(fit_homophily) |> diag() |> sqrt(),
+  sd_logit    = sqrt(diag(solve(fit_homophily_logit$hessian)))
+)
+```
+
+As you can see, both models yielded the same estimates because they are the same! Before continuing, let's review a couple of important results in ERGMs.
+
+# The most important results
+
+If we were able to say what two of the most important results in ERGMs are, I would say the following: (a) conditioning on the rest of the graph, the probability of a tie distributes Logistic (Bernoulli), and (b) the ratio between two loglikelihoods can be approximated through simulation.
+
+## The logistic distribution
+
+Let's start by stating the result: Conditioning on all graphs that are not $y_{ij}$, the probability of a tie $Y_{ij}$ is distributed Logistic; formally:
+
+\newcommand{\chng}[0]{\delta_{ij}(\bm{y})}
+
+$$
+\Prergm(Y_{ij}=1 | \bm{y}_{-ij}) = \frac{1}{1 + \exp \left(\tpose{\bm{\theta}}\chng{}\right)},
+$$
+
+where $\chng{}\equiv s_{ij}^+(\bm{y}) - s_{ij}^-(\bm{y})$ is the change statistic, and $s_{ij}^+(\bm{y})$ and $s_{ij}^-(\bm{y})$ are the statistics of the graph with and without the tie $Y_{ij}$, respectively.
+
+The importance of this result is two-fold: (a) we can use this equation to interpret fitted models in the context of a single graph (like using odds,) and (b) we can use this equation to simulate from the model, **without touching the normalizing constant**. 
+
+## The ratio of loglikelihoods
+
+The second significant result is that the ratio of loglikelihoods can be approximated through simulation. It is based on the following observation by @geyerConstrainedMonteCarlo1992:
+
+$$
+\frac{\kappa(\bm{\theta})}{\kappa(\bm{\theta}_0)} = \mathbb{E}_{\mathcal{Y}, \bm{\theta}_0}\left(\tpose{(\bm{\theta} - \bm{\theta}_0)s(\bm{y})}\right),
+$$
+
+Using the latter, we can approximate the following loglikelihood ratio:
+
+\begin{align*}
+l(\bm{\theta}) - l(\bm{\theta}_0) = & \tpose{(\bm{\theta} - \bm{\theta}_0)}s(\bm{y}) - \log\left[\frac{\kappa(\bm{\theta})}{\kappa(\bm{\theta}_0)}\right]\\
+\approx & \tpose{(\bm{\theta} - \bm{\theta}_0)}s(\bm{y}) - \log\left[M^{-1}\sum_{\bm{y}^{(m)}} \tpose{(\bm{\theta} - \bm{\theta}_0)}s(\bm{y}^{(m)})\right]
+\end{align*}
+
+
+Where $\bm{\theta}_0$ is an arbitrary vector of parameters, and $\bm{y}^{(m)}$ are sampled from the distribution $P_{\mathcal{Y}, \bm{\theta}_0}$. In the words of @geyerConstrainedMonteCarlo1992, "[...] it is possible to approximate $\bm{\theta}$ by using simulations from one distribution $P_{\mathcal{Y}, \bm{\theta}_0}$ no matter which $\bm{\theta}_0$ in the parameter space is." This result has been key for the MC-MLE algorithm (see @hunterComputationalStatisticalMethods2012), which has been front and center in the `ergm` R package.[^cd]
+
+[^cd]: Although later versions of the `ergm` package use the contrastive divergence by @krivitskyUsingContrastiveDivergence2017.
+
+# Start to finish example
+
+There is no silver bullet to fit ERGMs. However, the following steps are a good starting point:
+
+1. **Inspect the data**: Ensure the network you work with is processed correctly. Some common mistakes include isolates being excluded, vertex attributes not being adequately aligned (mismatch), etc.
+
+2. **Start with endogenous effects first**: Before jumping into vertex/edge-covariates, try fitting models that only include structural terms such as edgecount, triangles (or their equivalent,) stars, reciprocity, etc.
+
+3. **After structure is controlled**: You can add vertex/edge-covariates. The most common ones are homophily, nodal-activity, etc.
+
+4. **Evaluate your results**: Once you have a model you are happy with, the last couple of steps are (a) assess convergence (which is usually done automagically by the `ergm` package,) and (b) assess goodness-of-fit, which in this context means how good was our model to capture (not-controlled for) properties of the network.
+
+Although we could go ahead and use an existing dataset to play with, instead, we will simulate a directed graph with the following properties:
+
+- 100 nodes.
+- Homophily on Music taste.
+- Gender heterophily.
+- Reciprocity
+
+The following code chunk illustrates how to do this in R. Notice that, like the previous example, we need to create a network with the vertex attributes needed to simulate homophily.
+
+```{r}
+#| label: generating-data
+#| message: false
+# Simulating the covariates (vertex attribute)
+set.seed(1235)
+
+# Simulating the data
+Y <- network(100, directed = TRUE)
+Y %v% "fav_music" <- sample(c("rock", "jazz", "pop"), 100, replace = TRUE)
+Y %v% "female"    <- rbinom(100, 1, 0.5) 
+```
+
+Now that we have a starting point for the simulation, we can use the `simulate_formula` function to get our network:
+
+```{r}
+#| label: generating-data-simulate
+#| collapse: true
+Y <- ergm::simulate_formula(
+  Y ~
+    edges +
+    nodematch("fav_music") + 
+    nodematch("female") +
+    mutual,
+  coef = c(-4, 1, -1, 2)
+  )
+
+# And visualize it!
+gplot(Y, vertex.col = c("green", "red")[Y %v% "female" + 1])
+```
+
+This figure is precisely why we need ERGMs (and why many Sunbelt talks don't include a network visualization!). We know the graph has structure (it's not random), but visually, it is hard to see. 
+
+## Inspect the data
+
+For the sake of time, we will not take the time to investigate our network properly. However, you should always do so. Make sure you do descriptive statistics (density, centrality, modularity, etc.), check missing values, isolates (disconnected nodes), and inspect your data visually through "notepad" and visualizations before jumping into your ERG model.
+
+
+## Start with endogenous effects first
+
+The step is to check whether we can fit an ERGM or not. We can do so with the Bernoulli graph:
+
+```{r}
+#| label: first-model
+#| message: false
+model_1 <- ergm(Y ~ edges)
+summary(model_1)
+```
+
+It is rare to see a model in which the edgecount is not significant. The next term we will add is reciprocity (`mutual` in the `ergm` package)
+
+```{r}
+#| label: model-mutual
+#| collapse: true
+#| message: false
+model_2 <- ergm(Y ~ edges + mutual) 
+summary(model_2)
+```
+
+As expected, reciprocity is significant (we made it like this!.) Notwithstanding, there is a difference between this model and the previous one. This model was not fitted using MLE. Instead, since the reciprocity term involves more than one tie, the model cannot be reduced to a Logistic regression, so it needs to be estimated using one of the other available estimation methods in the `ergm` package. 
+
+The model starts gaining complexity as we add higher-order terms involving more ties. An infamous example is the number of triangles. Although highly important for social sciences, including triangle terms in your ERGMs results in a degenerate model (when the MCMC chain jumps between empty and fully connected graphs). One exception is if you deal with small networks. To address this, @Snijders2006 and @hunterCurvedExponentialFamily2007 introduced various new terms that significantly reduce the risk of degeneracy. Here, we will illustrate the use of the term "geometrically weighted dyadic shared partner" (`gwdsp`,) which Prof. David Hunter proposed. The `gwdsp` term is akin to triadic closure but reduces the chances of degeneracy.
+
+```{r}
+#| label: model-gwdsp
+#| collapse: true
+#| message: false
+# Fitting two more models (output message suppressed)
+model_3 <- ergm(Y ~ edges + mutual + gwdsp(.5, fixed = TRUE))
+# model_4 <- ergm(Y ~ edges + triangles) # bad idea
+```
+
+Right after fitting a model, we want to inspect the results. An excellent tool for this is the R package `texreg` [@leifeldTexregConversionStatistical2013]:
+
+```{r}
+#| label: simples-table
+#| message: false
+#| warning: false
+#| results: asis
+library(texreg)
+knitreg(list(model_1, model_2, model_3))
+```
+
+So far, `model_2` is winning. We will continue with this model.
+
+## Let's add a little bit of structure
+
+Now that we only have a model featuring endogenous terms, we can add vertex/edge-covariates. Starting with `"fav_music"`, there are a couple of different ways to use this node feature:
+
+a. Directly through homophily (assortative mixing): Using the `nodematch` term, we can control for the propensity of individuals to connect based on shared music taste.
+
+b. Homophily (v2): We could activate the option `diff = TRUE` using the same term. By doing this, the homophily term is operationalized differently, adding as many terms as options in the vertex attribute.
+
+c. Mixing: We can use the term `nodemix` for individuals' tendency to mix between musical tastes.
+
+::: {.callout title="Question"}
+In this context, what would be the different hypotheses behind each decision?
+:::
+
+```{r}
+#| label: working-homophily
+#| message: false
+model_4 <- ergm(Y ~ edges + mutual + nodematch("fav_music"))
+model_5 <- ergm(Y ~ edges + mutual + nodematch("fav_music", diff = TRUE))
+model_6 <- ergm(Y ~ edges + mutual + nodemix("fav_music"))
+```
+
+Now, let's inspect what we have so far:
+
+```{r}
+#| label: working-homophily-table
+#| message: false
+#| warning: false
+#| results: asis
+knitreg(list(`2` = model_2, `4` = model_4, `5` = model_5, `6` = model_6))
+```
+
+Although model 5 has a higher loglikelihood, using AIC or BIC suggests model 4 is a better candidate. For the sake of time, we will jump ahead and add `nodematch("female")` as the last term of our model. The next step is to assess (a) convergence and (b) goodness-of-fit.
+
+```{r}
+#| label: last-model
+#| message: false
+#| results: asis
+model_final <- ergm(Y ~ edges + mutual + nodematch("fav_music") + nodematch("female"))
+
+# Printing the pretty table
+knitreg(list(`2` = model_2, `4` = model_4, `Final` = model_final))
+```
+
+## Evaluate your results
+
+### Convergence
+
+As our model was fitted using MCMC, we must ensure the chains converged. We can use the `mcmc.diagnostics` function from the `ergm` package to check model convergence. This function looks at the last set of simulations of the MCMC model and generates various diagnostics for the user.
+
+Under the hood, the fitting algorithm generates a stream of networks based on those parameters for each new proposed set of model parameters. The last stream of networks is thus simulated using the final state of the model. The `mcmc.diagnostics` function takes that stream of networks and plots the sequence of the sufficient statistics included in the model. A converged model should show a stationary statistics sequence, moving around a fixed value without (a) becoming stuck at any point and (b) chaining the tendency. This model shows both:
+
+```{r}
+#| label: convergence
+#| message: false
+mcmc.diagnostics(model_final, which   = c("plots"))
+```
+
+Now that we know our model was good enough to represent the observed statistics (sample them, actually,) let's see how good it is at capturing other features of the network that were not included in the model.
+
+### Goodness-of-fit
+
+This would be the last step in the sequence of steps to fit an ERGM. As we mentioned before, the idea of Goodness-of-fit [GOF] in ERG models is to see how well our model captures other properties of the graph that were not included in the model. By default, the `gof` function from the `ergm` package computes GOF for:
+
+a. The model statistics.
+
+b. The outdegree distribution.
+
+c. The indegree distribution.
+
+d. The distribution of edge-wise shared partners.
+
+e. The distribution of the geodesic distances (shortest path).
+
+The process of evaluating GOF is relatively straightforward. Using samples from the posterior distribution, we check whether the observed statistics from above are covered (fall within the CI) of our model. If they do, we say that the model has a good fit. Otherwise, if we observe significant anomalies, we return to the bench and try to improve our model.
+
+As with all simulated data, our `gof()` call shows that our selected model was an excellent choice for the observed graph:
+
+```{r}
+#| label: gof-calc
+#| message: false
+#| warning: false
+#| collapse: true
+gof_final <- gof(model_final)
+print(gof_final)
+```
+
+It is easier to see the results using the `plot` function:
+
+```{r}
+#| label: gof-plot
+#| message: false
+#| fig.height: 10
+# Plotting the result (5 figures)
+op <- par(mfrow = c(3,2))
+plot(gof_final)
+par(op)
+```
+
+# Conclusion
+
+We have shown here just a glimpse of what ERG models are. A large, active, collaborative community of social network scientists is working on new extensions and advances. If you want to learn more about ERGMs, I recommend the following resources:
+
+- The Statnet website [(link)](https://statnet.org/).
+
+- The book "Exponential Random Graph Models for Social Networks: Theory, Methods, and Applications" by @lusherExponentialRandomGraph2013.
+
+- Melnet's PNEt website [(link)](https://www.melnet.org.au/pnet/).
+
+# Group activity
+
+The `ergm` package comes with a handful of vignettes (extended R examples) that you can use to learn more about the package. The vignette with the same name as the package shows an example fitting a model to the network `faux.mesa.high`. Address the following questions:
+
+a. What type of ERG model is this?
+
+b. Looking at the plot in the vignette, what other term(s) could you consider worth adding to the model? Why? 
+
+c. The vignette did not include a goodness-of-fit analysis. Can you add one? What do you find?
+
+d. **Challenge**: without using `ergm` to fit the model, estimate the following $p1$ model: `~ edges + nodefactor("Race")`. Compare your results with what you get using `ergm`.
+
+
+# References
+

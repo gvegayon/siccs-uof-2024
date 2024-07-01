@@ -1,67 +1,33 @@
 project:
-  type: book
+  type: website
   output-dir: docs
+  render: 
+    - "*/index.qmd"
+    - "index.qmd"
 
-execute: 
-  cache: true
-
-book:
-  google-analytics: G-YCY24Z74EY
-  title: Statistical Inference in Network Science
-  subtitle: UDD networks 2024
-  author: George G. Vega Yon, Ph.D.
-  date: 2024-01-14
-  cover-image: figs/ai-image-cover.jpeg
-  cover-image-alt: An AI image generated with Bing representing statistical inference in networks.
-  page-footer: Statistical Inference in Network Science - [https://ggvy.cl](https://ggvy.cl){target="_blank"}
-  navbar:
-    background: light
+website:
+  title: Chisocnet Summer School 2024 -- ERGMs
+  
+  navbar: 
+    left:
+      - text: Home
+        href: index.qmd
+      - text: Fundamentals
+        href: 00-fundamentals/index.qmd
+      - text: Introduction
+        href: 01-intro-to-ergms/index.qmd
+      - text: Advanced topics
+        href: 02-advanced-ergms/index.qmd
+      - text: New developments
+        href: 03-new-topics/index.qmd
     right:
       - icon: github
-        href: https://github.com/gvegayon/networks-udd2024
-        aria-label: GitHub
-
-
-  chapters: 
-    - index.qmd
-    - part: Day 1
-      chapters:
-        - 01-overview.qmd
-        - 02-random-graphs.qmd
-        - 03-behavior-and-coevolution.qmd
-        - 04-lab-1.qmd
-        - 05-intro-to-ergms.qmd
-    - part: Day 2
-      chapters:
-        - 06-ergms-cont.qmd
-        - 07-odd-balls.qmd
-        - 08-lab-2.qmd
-        - 09-advanced-ergms.qmd
-        - 10-new-topics.qmd
-    - references.qmd
-  downloads:
-  - epub
-  - pdf
-
-
-bibliography: references.bib
+        href: https://github.com/gvegayon/chisocnet-ss2024
 
 format:
   html:
     html-math-method: katex
+    bibliography: ../references.bib
     toc: true
     number-sections: true
-  pdf:
-    geometry: 
-      - top=1in
-      - bottom=1in
-      - left=1in
-      - right=1in
-    fontsize: 12pt
-    fontenc: T1
-    include-in-header: 
-      - text: |
-          \allowdisplaybreaks
-          \usepackage{bm}
-  epub: default
-
+    embed-resources: true
