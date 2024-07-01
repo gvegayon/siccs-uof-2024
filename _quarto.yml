@@ -1,0 +1,67 @@
+project:
+  type: book
+  output-dir: docs
+
+execute: 
+  cache: true
+
+book:
+  google-analytics: G-YCY24Z74EY
+  title: Statistical Inference in Network Science
+  subtitle: UDD networks 2024
+  author: George G. Vega Yon, Ph.D.
+  date: 2024-01-14
+  cover-image: figs/ai-image-cover.jpeg
+  cover-image-alt: An AI image generated with Bing representing statistical inference in networks.
+  page-footer: Statistical Inference in Network Science - [https://ggvy.cl](https://ggvy.cl){target="_blank"}
+  navbar:
+    background: light
+    right:
+      - icon: github
+        href: https://github.com/gvegayon/networks-udd2024
+        aria-label: GitHub
+
+
+  chapters: 
+    - index.qmd
+    - part: Day 1
+      chapters:
+        - 01-overview.qmd
+        - 02-random-graphs.qmd
+        - 03-behavior-and-coevolution.qmd
+        - 04-lab-1.qmd
+        - 05-intro-to-ergms.qmd
+    - part: Day 2
+      chapters:
+        - 06-ergms-cont.qmd
+        - 07-odd-balls.qmd
+        - 08-lab-2.qmd
+        - 09-advanced-ergms.qmd
+        - 10-new-topics.qmd
+    - references.qmd
+  downloads:
+  - epub
+  - pdf
+
+
+bibliography: references.bib
+
+format:
+  html:
+    html-math-method: katex
+    toc: true
+    number-sections: true
+  pdf:
+    geometry: 
+      - top=1in
+      - bottom=1in
+      - left=1in
+      - right=1in
+    fontsize: 12pt
+    fontenc: T1
+    include-in-header: 
+      - text: |
+          \allowdisplaybreaks
+          \usepackage{bm}
+  epub: default
+
