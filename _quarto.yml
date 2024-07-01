@@ -4,6 +4,7 @@ project:
   render: 
     - "*/index.qmd"
     - "index.qmd"
+    - "references.qmd"
 
 website:
   title: SICCS at the U of F -- ERGMs
@@ -20,6 +21,8 @@ website:
         href: 02-advanced-ergms/index.qmd
       - text: New developments
         href: 03-new-topics/index.qmd
+      - text: References
+        href: references.qmd
     right:
       - icon: github
         href: https://github.com/gvegayon/chisocnet-ss2024

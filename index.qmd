@@ -19,12 +19,6 @@ In addition, a presentation about new topics in network modeling was presented d
 
 4. [New topics in Network Modeling](/03-new-topics)
 
-# References
-
-Although not all about ERGMs, the following list of references is an excellent resource for statistical inference in network science.
-
-::: {#refs}
-:::
 
 # Disclaimer
 
