@@ -1,6 +1,7 @@
 ---
 title: Introduction to ERGMs
 references: ../references.bib
+date-modified: 2024-07-03
 ---
 
 ```{r}
@@ -23,13 +24,24 @@ pp <- function(x) {
 \newcommand{\thetas}[0]{\bm{\theta}}
 \newcommand{\isone}[1]{\mathbb{1}\left(#1\right)}
 
-Have you ever wondered if the friend of your friend is your friend? Or if the people you consider to be your friends feel the same about you? Or if age is related to whether you seek advice from others? All these (and many others certainly more creative) questions can be answered using Exponential-Family Random Graph Models.
+Have you ever wondered if the friend of your friend is your friend? Or if the people you consider your friends feel the same about you, or if age is related to whether you seek advice from others? All these (and many others certainly more creative) questions can be answered using Exponential-Family Random Graph Models.
+
+# ERGMs in a nutshell
+
+Exponential-family Random Graph Models (ERG Models or ERGMs) generalize many network models. These come in various flavors, including directed, undirected, bipartite, and multi-layer networks. ERGMs also feature dynamic models, *i.e.*, evolution of networks over time. Overall, the main goal of ERG models is to make statistical inferences about the prevalence of specific structures in observed graphs. Although we can use it to predict individual ties, other models based on machine learning algorithms may be more appropriate for the task. Here are a few example types of questions and tasks ERG models can be used to address:
+
+1. First and foremost, **estimating network models** for testing hypotheses such as "Are matching gender individuals more likely to befriend each other?", "Are individuals of gender xyz more likely to send more ties than others?", "Does age play a role in triadic closure?".
+
+2. **Conditional sampling from existing networks**. In permutation tests, network scientists often generate null hypotheses by sampling conditioning on a fix network statistic, for example, the degree sequence or density. With ERGMs, we can go beyond and have a sampling distribution that conditions multiple features simulatenously.
+
+3. **Simulating networks for ABMs**. Using existing ERGM fits, we can generate more realistic networks for Agent-Based Model studies. 
+
 
 # Introduction
 
 Exponential-Family Random Graph Models, known as ERGMs, ERG Models, or $p^*$ models (@Holland1981, @Frank1986, @Wasserman1996, @Snijders2006, @Robins2007, and many others) are a large family of statistical distributions for random graphs. In ERGMs, the focus is on the processes that give origin to the network rather than the individual ties.[^predict]
 
-[^predict]: While ERG Models can be used to predict individual ties (which is another way of describing them), the focus is on the processes that give origin to the network.
+[^predict]: While ERG Models can predict individual ties (another way of describing them), the focus is on the processes that give origin to the network.
 
 The most common representation of ERGMs is the following:
 
@@ -45,9 +57,9 @@ $$
 
 From the statistical point of view, the normalizing constant makes this model attractive; only cases where $\mathcal{Y}$ is small enough to be enumerated are feasible [@vegayonExponentialRandomGraph2021]. Because of that reason, estimating ERGMs is a challenging task.
 
-In more simple terms, ERG models resemble Logistic regressions. The term $\tpose{\thetas} s(\y)$ is the sum of the product between the parameters and the statistics (like you would see in a Logistic regression,) and its key component is the composition of the vector of sufficient statistics, $s(\y)$. The latter is what defines the model.
+In simpler terms, ERG models resemble Logistic regressions. The term $\tpose{\thetas} s(\y)$ is the sum of the product between the parameters and the statistics (like you would see in a Logistic regression,) and its key component is the composition of the vector of sufficient statistics, $s(\y)$. The latter is what defines the model.
 
-The vector of sufficient statistics dictates the data-generating process of the network. Like the mean and variance characterize the normal distribution, sufficient statistics (and corresponding parameters) characterize the ERG distribution. @fig-ergmterms shows some examples of sufficient statistics with their corresponding parametrizations.
+The vector of sufficient statistics dictates the network's data-generating process. Like the mean and variance characterize the normal distribution, sufficient statistics (and corresponding parameters) characterize the ERG distribution. @fig-ergmterms shows some examples of sufficient statistics with their corresponding parametrizations.
 
 ![Example ERGM terms from @vegayonExponentialRandomGraph2021](ergm-terms-vegayonetal2021.jpg){#fig-ergmterms width="60%"}
 
@@ -56,7 +68,7 @@ The `ergm` package has many terms we can use to fit these models. You can explor
 
 # Dyadic independence (p1)
 
-The simplest ERG model we can fit is a Bernoulli (Erdos-Renyi) model. Here, the only statistic is the edgecount. Now, if we can write the function computing sufficient statistics as a sum over all edges, *i.e.*, $s(\y) = \sum_{ij}s'(y_{ij})$, the model reduces to a Logistic regression. 
+The simplest ERG model we can fit is a Bernoulli (Erdos-Renyi) model. Here, the only statistic is the edge count. Now, if we can write the function computing sufficient statistics as a sum over all edges, *i.e.*, $s(\y) = \sum_{ij}s'(y_{ij})$, the model reduces to a Logistic regression. 
 
 ```{r}
 #| label: bernoulli-ergm
@@ -76,13 +88,13 @@ cbind(
 )
 ```
 
-When we see this, we say that dyads are independent of each other; this is also called *p1* models [@Holland1981]. As a second example, imagine that we are interested in assessing whether gender homophily (the tendency between individuals of the same gender to connect) is present in a network. ERG models are the right tool for this task. Moreover, if we assume that gender homophily is the only mechanism that governs the network, the problem reduces to a Logistic regression:
+When we see this, we say that dyads are independent of each other, also called *p1* models [@Holland1981]. As a second example, imagine that we are interested in assessing whether gender homophily (the tendency between individuals of the same gender to connect) is present in a network. ERG models are the right tool for this task. Moreover, if we assume that gender homophily is the only mechanism that governs the network, the problem reduces to a Logistic regression:
 
 $$
 \Prergm(y_{ij} = 1) = \text{Logit}^{-1}\left(\theta_{edges} + \theta_{homophily}\isone{X_i = X_j}\right)
 $$
 
-where $\isone{\cdot}$ is the indicator function, and $X_i$ equals one if the $ith$ individual is female, and zero otherwise. To see this, let's simulate some data. We will use the `simulate_formula` function in the `ergm` package. All we need is a network, a model, and some arbitrary coefficients. We start with an indicator vector for gender (1: female, male otherwise):
+where $\isone{\cdot}$ is the indicator function, and $X_i$ equals one if the $ith$ individual is female, and zero otherwise. To see this, let's simulate some data. The `simulate_formula` function will be used in the `ergm` package. We only need a network, a model, and some arbitrary coefficients. We start with an indicator vector for gender (1: female, male, otherwise):
 
 ```{r}
 #| label: simple-example
@@ -118,7 +130,7 @@ Y <- ergm::simulate_formula(
   )
 ```
 
-In this case, the network tends to be sparse (negative edges coefficient) and present homophilic ties (positive nodematch coefficient). Using the `sna` package (also from the `statnet` suite), we can plot the network:
+In this case, the network tends to be sparse (negative edges coefficient) and present homophilic ties (positive node match coefficient). Using the `sna` package (also from the `statnet` suite), we can plot the network:
 
 ```{r}
 #| label: simple-example-plot
@@ -153,10 +165,10 @@ sstats <- summary_formula(Y ~ edges + nodematch("X"))
 Y_mat <- as.matrix(Y)
 diag(Y_mat) <- NA
 
-# To speedup computations, we pre-compute this value
+# To speed computations, we pre-compute this value
 X_vec <- outer(X, X, "==") |> as.numeric()
 
-# Function to compute the negative loglikelihood
+# Function to compute the negative likelihood
 obj <- \(theta) {
 
   # Compute the probability according to the value of Y
@@ -185,7 +197,7 @@ And, using the `optim` function, we can fit the model:
 fit_homophily_logit <- optim(c(0,0), obj, hessian = TRUE)
 ```
 
-Now that we have the values let's compare them:
+Now that we have the values, let's compare them:
 
 ```{r}
 #| label: simple-example-fit-glm-coef
@@ -199,7 +211,7 @@ cbind(
 )
 ```
 
-As you can see, both models yielded the same estimates because they are the same! Before continuing, let's review a couple of important results in ERGMs.
+As you can see, both models yielded the exact estimates because they are the same! Before continuing, let's review a couple of essential results in ERGMs.
 
 # The most important results
 
