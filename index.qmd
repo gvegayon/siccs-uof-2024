@@ -1,10 +1,8 @@
 ---
-nocite: |
-  @*
-bibliography: references.bib
 title: Home
 author: George G. Vega Yon, Ph.D.
 date-modified: 2024-07-01
+bibliography: references.bib
 ---
 
 This website was created for the school's ERGMs component. Here, you will find three subpages with the following content: (1) Fundamentals about R and Statistics, (2) Introduction to ERGMs, (3) and Advanced ERGMs:
