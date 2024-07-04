@@ -28,6 +28,8 @@ Have you ever wondered if the friend of your friend is your friend? Or if the pe
 
 # ERGMs in a nutshell
 
+![Three types of structures frequently used in ERGMs.](https://raw.githubusercontent.com/gvegayon/laerug-ergms-june2019/master/fig/friendly-terms.svg){width=90% fig-align="center"}
+
 Exponential-family Random Graph Models (ERG Models or ERGMs) generalize many network models. These come in various flavors, including directed, undirected, bipartite, and multi-layer networks. ERGMs also feature dynamic models, *i.e.*, evolution of networks over time. Overall, the main goal of ERG models is to make statistical inferences about the prevalence of specific structures in observed graphs. Although we can use it to predict individual ties, other models based on machine learning algorithms may be more appropriate for the task. Here are a few example types of questions and tasks ERG models can be used to address:
 
 1. First and foremost, **estimating network models** for testing hypotheses such as "Are matching gender individuals more likely to befriend each other?", "Are individuals of gender xyz more likely to send more ties than others?", "Does age play a role in triadic closure?".
@@ -138,6 +140,16 @@ In this case, the network tends to be sparse (negative edges coefficient) and pr
 #| warning: false
 library(sna)
 gplot(Y, vertex.col = c("green", "red")[Y %v% "X" + 1])
+```
+
+Or we can also use the `netplot` package [@netplot]:
+
+```{r}
+#| label: simple-example-netplot
+#| message: false
+#| warning: false
+library(netplot)
+nplot(Y, vertex.color = ~ X)
 ```
 
 Using the ERGM package, we can fit the model using code very similar to the one used to simulate the network:
