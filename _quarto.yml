@@ -8,6 +8,8 @@ project:
 
 website:
   title: SICSS at the U of F -- ERGMs
+
+  page-footer: 'George G. Vega Yon -- [https://ggvy.cl](https://ggvy.cl){target="_blank"}'
   
   navbar: 
     left:
