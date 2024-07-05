@@ -7,7 +7,7 @@ project:
     - "references.qmd"
 
 website:
-  title: SICCS at the U of F -- ERGMs
+  title: SICSS at the U of F -- ERGMs
   
   navbar: 
     left:
@@ -25,7 +25,7 @@ website:
         href: references.qmd
     right:
       - icon: github
-        href: https://github.com/gvegayon/siccs-uof-2024
+        href: https://github.com/gvegayon/sicss-uof-2024
 
 format:
   html:

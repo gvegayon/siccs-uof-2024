@@ -1,11 +1,11 @@
 ---
 title: Home
 author: George G. Vega Yon, Ph.D.
-date-modified: 2024-07-01
+date-modified: 2024-07-04
 bibliography: references.bib
 ---
 
-This website was created for the school's ERGMs component. Here, you will find three subpages with the following content: (1) Fundamentals about R and Statistics, (2) Introduction to ERGMs, (3) and Advanced ERGMs:
+This website was created for the [2024 SICSS at the University of Florida](https://sicss.io/2024/florida/){target="_blank"} ERGMs component. Here, you will find three subpages with the following content: (1) Fundamentals about R and Statistics, (2) Introduction to ERGMs, (3) and Advanced ERGMs:
 
 1. [Fundamentals about R and Statistics](/00-fundamentals)
 
